@@ -7,6 +7,7 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {
+        external: ['better-sqlite3'],
         input: {
           index: resolve(__dirname, 'src/main/index.ts')
         }
