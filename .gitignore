@@ -1,0 +1,33 @@
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+dist/
+dist-electron/
+release/
+
+# Misc
+.DS_Store
+*.log
+*.swp
+*.swo
+*~
+
+# Electron
+*.app
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.local
