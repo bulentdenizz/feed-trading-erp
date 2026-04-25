@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { useAuthStore } from '../store/authStore';
-import '../styles/theme.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
+import '../../styles/theme.css';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading, error } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       await login(username, password);
-      // Navigation will be handled by the router after successful login
+      navigate('/');
     } catch (err) {
       // Error is already set in the store
       console.error('Login error:', err);
@@ -20,8 +22,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="card w-full max-w-md">
+    <div className="w-full max-w-md">
+      <div className="card w-full">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-center mb-2">ERP Sistemi</h1>
           <p className="text-center text-muted-foreground">Giriş Yapın</p>

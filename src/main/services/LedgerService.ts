@@ -241,7 +241,7 @@ export class LedgerService {
 
     // Tüm açık faturaları al + entity bilgisi + gecikmeli gün hesabı
     const rows = this.db
-      .prepare<[EntityType, string]>(`
+      .prepare<[string, EntityType]>(`
         SELECT
           oi.id           AS invoice_id,
           oi.invoice_number,

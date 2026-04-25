@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -19,25 +20,12 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 
-export type Page =
-  | 'dashboard'
-  | 'customers'
-  | 'suppliers'
-  | 'inventory'
-  | 'sales'
-  | 'purchases'
-  | 'payments'
-  | 'reports'
-  | 'settings';
+export default function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPage = location.pathname.replace('/', '') || 'dashboard';
 
-interface SidebarProps {
-  currentPage: Page;
-  onNavigate: (page: Page) => void;
-}
-
-export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  // Dark mode state (can be moved to a store later, for now local)
   const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains("dark"));
   
   const { username, logout } = useAuthStore();
@@ -56,6 +44,10 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
     document.documentElement.classList.toggle("dark", newDarkMode);
   };
 
+  const onNavigate = (path: string) => {
+    navigate(`/${path}`);
+  };
+
   // Cariler Group
   const cariPages = ["customers", "suppliers"];
   const cariActive = cariPages.includes(currentPage);
@@ -65,6 +57,12 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const islemPages = ["sales", "purchases", "payments"];
   const islemActive = islemPages.includes(currentPage);
   const [islemlerOpen, setIslemlerOpen] = useState(islemActive);
+
+  // Auto-expand groups based on active route
+  useEffect(() => {
+    if (cariActive) setCarilerOpen(true);
+    if (islemActive) setIslemlerOpen(true);
+  }, [cariActive, islemActive]);
 
   const handleCarilerClick = () => {
     if (collapsed) {
@@ -92,7 +90,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
     }
   };
 
-  const renderItem = (id: Page, label: string, Icon: React.ElementType) => {
+  const renderItem = (id: string, label: string, Icon: React.ElementType) => {
     const isActive = currentPage === id;
     return (
       <button

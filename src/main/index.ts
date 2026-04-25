@@ -12,15 +12,18 @@ import { registerLedgerHandlers } from './handlers/ledger.handler';
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow() {
+  const preloadPath = path.join(__dirname, '../preload/index.js');
+  console.log('[ELECTRON] Preload path resolved to:', preloadPath);
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 1200,
     minHeight: 800,
     webPreferences: {
-    preload: path.join(__dirname, '../preload/index.js'),
-    contextIsolation: true,
-    nodeIntegration: false
+      preload: preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 

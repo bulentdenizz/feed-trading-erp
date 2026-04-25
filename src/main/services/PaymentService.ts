@@ -247,7 +247,7 @@ export class PaymentService {
    */
   getUnallocatedAmount(entityId: number): number {
     const row = this.db
-      .prepare<[number], { unallocated: number | null }>(`
+      .prepare<[number, number], { unallocated: number | null }>(`
         SELECT
           COALESCE(SUM(t.amount_kurus), 0)
           - COALESCE(

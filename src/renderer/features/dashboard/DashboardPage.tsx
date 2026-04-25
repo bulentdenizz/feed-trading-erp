@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react';
-import { useAuthStore } from '../store/authStore';
-import KpiCard from '../components/ui/KpiCard';
-import DataTable from '../components/ui/DataTable';
-import DurumBadge from '../components/ui/DurumBadge';
-import { Wallet, Users, Package, FileText, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { useTransactions } from '../hooks/useTransactions';
-import { useAgingReport } from '../hooks/useLedger';
-import { useItems } from '../hooks/useItems';
-import '../styles/theme.css';
+import { useAuthStore } from '../../store/authStore';
+import KpiCard from '../../components/ui/KpiCard';
+import DataTable from '../../components/ui/DataTable';
+import DurumBadge from '../../components/ui/DurumBadge';
+import { Wallet, Users, Package } from 'lucide-react';
+import { useTransactions } from '../../hooks/useTransactions';
+import { useAgingReport } from '../../hooks/useLedger';
+import { useItems } from '../../hooks/useItems';
+import '../../styles/theme.css';
 
-// ─── Yardımcı Fonksiyon: Para Formatı ─────────────────────────────────────────
 function fromKurus(kurus: number): string {
   return new Intl.NumberFormat('tr-TR', {
     style: 'currency',
@@ -18,19 +17,9 @@ function fromKurus(kurus: number): string {
 }
 
 const DashboardPage: React.FC = () => {
-  const { username, role, logout } = useAuthStore();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
+  const { username } = useAuthStore();
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  // ─── Veri Çekme İşlemleri (Hooks) ───────────────────────────────────────────
   const { data: sales, isLoading: loadingSales, error: errorSales } = useTransactions({ fromDate: todayStr, type: 'sale', status: 'active' });
   const { data: payments, isLoading: loadingPayments, error: errorPayments } = useTransactions({ fromDate: todayStr, type: 'payment_in', status: 'active' });
   const { data: agingReport, isLoading: loadingAging, error: errorAging } = useAgingReport('customer');
@@ -40,32 +29,13 @@ const DashboardPage: React.FC = () => {
   const isLoading = loadingSales || loadingPayments || loadingAging || loadingItems || loadingRecent;
   const error = errorSales || errorPayments || errorAging || errorItems || errorRecent;
 
-  // ─── Veri Hesaplamaları ─────────────────────────────────────────────────────
+  const todaySalesTotal = useMemo(() => sales?.reduce((acc, tx) => acc + tx.amount_kurus, 0) || 0, [sales]);
+  const todayPaymentsTotal = useMemo(() => payments?.reduce((acc, tx) => acc + tx.amount_kurus, 0) || 0, [payments]);
+  const totalReceivables = useMemo(() => agingReport?.grand_total_kurus || 0, [agingReport]);
+  const lowStockCount = useMemo(() => items?.filter(item => item.current_stock <= item.low_stock_threshold).length || 0, [items]);
 
-  // 1. Bugünkü Satış
-  const todaySalesTotal = useMemo(() => {
-    return sales?.reduce((acc, tx) => acc + tx.amount_kurus, 0) || 0;
-  }, [sales]);
-
-  // 2. Bugünkü Tahsilat
-  const todayPaymentsTotal = useMemo(() => {
-    return payments?.reduce((acc, tx) => acc + tx.amount_kurus, 0) || 0;
-  }, [payments]);
-
-  // 3. Açık Alacak (Customer Grand Total)
-  const totalReceivables = useMemo(() => {
-    return agingReport?.grand_total_kurus || 0;
-  }, [agingReport]);
-
-  // 4. Kritik Stok Sayısı
-  const lowStockCount = useMemo(() => {
-    return items?.filter(item => item.current_stock <= item.low_stock_threshold).length || 0;
-  }, [items]);
-
-  // Vadesi Geçen Ödemeler (Mini Liste - Üst 5 Entity)
   const topOverdueEntities = useMemo(() => {
     if (!agingReport) return [];
-
     const allOverdueItems = [
       ...agingReport.overdue_30.items,
       ...agingReport.overdue_60.items,
@@ -73,7 +43,6 @@ const DashboardPage: React.FC = () => {
       ...agingReport.overdue_plus.items,
     ];
 
-    // Entity bazında borçları topla
     const entityTotals = new Map<number, { title: string; total_kurus: number }>();
     allOverdueItems.forEach(item => {
       const current = entityTotals.get(item.entity_id);
@@ -84,18 +53,14 @@ const DashboardPage: React.FC = () => {
       }
     });
 
-    // Azalan sırada sırala ve ilk 5'i al
     return Array.from(entityTotals.values())
       .sort((a, b) => b.total_kurus - a.total_kurus)
       .slice(0, 5);
   }, [agingReport]);
 
-  // Son İşlemler Tablosu Verisi
   const tableData = useMemo(() => {
     return recentTx?.map(t => {
-      // Durum Badge Belirleme
-      let statusBadge = <DurumBadge status="Ödendi" variant="success" />; // Varsayılan peşin/tahsilat
-      
+      let statusBadge = <DurumBadge status="Ödendi" variant="success" />;
       if (t.status === 'cancelled') {
         statusBadge = <DurumBadge status="İptal" variant="destructive" />;
       } else if (t.transaction_type === 'sale' || t.transaction_type === 'purchase') {
@@ -107,7 +72,6 @@ const DashboardPage: React.FC = () => {
         }
       }
 
-      // İşlem Tipi Çevirisi
       const typeMap: Record<string, string> = {
         sale: 'Satış',
         purchase: 'Alış',
@@ -138,8 +102,6 @@ const DashboardPage: React.FC = () => {
     { key: 'status', label: 'Durum' },
   ];
 
-  // ─── Render ─────────────────────────────────────────────────────────────────
-
   if (error) {
     return (
       <div className="p-8 text-destructive">
@@ -150,8 +112,7 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-background min-h-screen p-6">
-      {/* Header */}
+    <div className="p-6">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-1">Gösterge Paneli</h1>
@@ -168,36 +129,14 @@ const DashboardPage: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            <KpiCard
-              title="Bugünkü Satış"
-              value={fromKurus(todaySalesTotal)}
-              icon={<Wallet className="w-4 h-4 text-primary" />}
-              subtitle="Tahakkuk"
-            />
-            <KpiCard
-              title="Bugünkü Tahsilat"
-              value={fromKurus(todayPaymentsTotal)}
-              icon={<Wallet className="w-4 h-4 text-green-600" />}
-              subtitle="Nakit Girişi"
-            />
-            <KpiCard
-              title="Açık Alacak"
-              value={fromKurus(totalReceivables)}
-              icon={<Users className="w-4 h-4 text-blue-500" />}
-              subtitle="Toplam Bekleyen"
-            />
-            <KpiCard
-              title="Kritik Stok"
-              value={`${lowStockCount} Ürün`}
-              icon={<Package className="w-4 h-4 text-amber-500" />}
-              subtitle="Eşik altında"
-            />
+            <KpiCard title="Bugünkü Satış" value={fromKurus(todaySalesTotal)} icon={<Wallet className="w-4 h-4 text-primary" />} subtitle="Tahakkuk" />
+            <KpiCard title="Bugünkü Tahsilat" value={fromKurus(todayPaymentsTotal)} icon={<Wallet className="w-4 h-4 text-green-600" />} subtitle="Nakit Girişi" />
+            <KpiCard title="Açık Alacak" value={fromKurus(totalReceivables)} icon={<Users className="w-4 h-4 text-blue-500" />} subtitle="Toplam Bekleyen" />
+            <KpiCard title="Kritik Stok" value={`${lowStockCount} Ürün`} icon={<Package className="w-4 h-4 text-amber-500" />} subtitle="Eşik altında" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Recent Transactions Table */}
             <div className="lg:col-span-2">
               <div className="mb-4">
                 <h2 className="text-lg font-bold">Son İşlemler</h2>
@@ -206,7 +145,6 @@ const DashboardPage: React.FC = () => {
               <DataTable columns={tableColumns} data={tableData} />
             </div>
 
-            {/* Overdue Payments Mini List */}
             <div>
               <div className="mb-4">
                 <h2 className="text-lg font-bold">Vadesi Geçen Alacaklar</h2>
