@@ -7,6 +7,7 @@ export function registerAuthHandlers() {
   const db = getDb();
   const authService = new AuthService(db);
 
+  // Login handler
   ipcMain.handle('auth:login', async (_event, { username, password }) => {
     try {
       const resp = await authService.authenticate({ username, password });
@@ -17,6 +18,7 @@ export function registerAuthHandlers() {
     }
   });
 
+  // Logout handler
   ipcMain.handle('auth:logout', async (_event, { token }) => {
     try {
       authService.logout(token);
@@ -27,6 +29,7 @@ export function registerAuthHandlers() {
     }
   });
 
+  // Validate session handler
   ipcMain.handle('auth:validate', async (_event, { token }) => {
     try {
       const session = authService.validateSession(token);

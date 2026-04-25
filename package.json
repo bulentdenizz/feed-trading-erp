@@ -1,10 +1,12 @@
 {
-  "name": "com.bulent.erp",
+  "name": "hesap-flow",
+  "build": {
+    "appId": "com.bulent.hesapflow",
+    "productName": "HesapFlow"
+  },
   "version": "1.0.0",
   "description": "Professional Feed Trading ERP System",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
@@ -54,8 +56,6 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "postcss": "^8.5.9",
     "prettier": "^3.7.4",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.7.0",
     "vite": "^7.2.6"

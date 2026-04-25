@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initDb } from './db/index';
+import { registerAuthHandlers } from './handlers/auth.handler';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -27,6 +28,7 @@ function createWindow() {
 
 app.on('ready', () => {
   initDb();
+  registerAuthHandlers(); // Register IPC handlers for authentication
   createWindow();
 });
 

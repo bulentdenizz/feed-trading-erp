@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./theme.css";
 
 @theme {
   --color-primary: #16A34A;
@@ -11,24 +12,6 @@
 }
 
 @layer base {
-  :root {
-    --primary: #16A34A;
-    --background: #F8F7F4;
-    --card: #ffffff;
-    --border: #e5e5e0;
-    --muted: #f3f2ef;
-    --muted-foreground: #6b7280;
-  }
-
-  .dark {
-    --background: #141413;
-    --foreground: #e5e5e0;
-    --card: #1c1c1a;
-    --border: #2e2e2b;
-    --muted: #262624;
-    --muted-foreground: #9ca3af;
-  }
-
   body {
     @apply bg-background text-foreground font-sans;
   }
