@@ -163,6 +163,53 @@ export const createSchema = (db: Database.Database) => {
     GROUP BY 
       i.id, i.name, i.unit, i.category, i.low_stock_threshold, i.is_active;
 
+    CREATE VIEW IF NOT EXISTS v_entity_balances AS
+    SELECT
+      e.id          AS entity_id,
+      e.title,
+      e.entity_type,
+      e.phone,
+      e.city,
+      e.is_active,
+      COALESCE(SUM(
+        CASE t.transaction_type
+          WHEN 'sale'             THEN  t.amount_kurus
+          WHEN 'purchase'         THEN  t.amount_kurus
+          WHEN 'payment_in'       THEN -t.amount_kurus
+          WHEN 'payment_out'      THEN -t.amount_kurus
+          WHEN 'sale_return'      THEN -t.amount_kurus
+          WHEN 'purchase_return'  THEN -t.amount_kurus
+          ELSE 0
+        END
+      ), 0) AS balance_kurus
+    FROM entities e
+    LEFT JOIN transactions t
+      ON t.entity_id = e.id
+     AND t.status = 'active'
+    GROUP BY
+      e.id, e.title, e.entity_type, e.phone, e.city, e.is_active;
+
+    CREATE VIEW IF NOT EXISTS v_open_invoices AS
+    SELECT
+      t.id,
+      t.invoice_number,
+      t.transaction_type,
+      t.entity_id,
+      t.amount_kurus,
+      t.due_date,
+      t.transaction_date,
+      COALESCE(SUM(pa.amount_kurus), 0)            AS paid_kurus,
+      t.amount_kurus - COALESCE(SUM(pa.amount_kurus), 0) AS remaining_kurus
+    FROM transactions t
+    LEFT JOIN payment_allocations pa
+      ON pa.invoice_transaction_id = t.id
+    WHERE t.transaction_type IN ('sale', 'purchase')
+      AND t.status = 'active'
+    GROUP BY
+      t.id, t.invoice_number, t.transaction_type,
+      t.entity_id, t.amount_kurus, t.due_date, t.transaction_date
+    HAVING remaining_kurus > 0;
+
     COMMIT;
   `);
 

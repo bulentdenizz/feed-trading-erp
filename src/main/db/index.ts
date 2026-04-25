@@ -2,10 +2,11 @@ import Database from 'better-sqlite3';
 import { app } from 'electron';
 import path from 'path';
 import { createSchema } from './schema';
+import { AuthService } from '../services/AuthService';
 
 let db: Database.Database | null = null;
 
-export function initDb() {
+export async function initDb(): Promise<Database.Database> {
   try {
     const dbPath = path.join(app.getPath('userData'), 'erp.db');
 
@@ -26,12 +27,15 @@ export function initDb() {
       .get();
 
     if (!adminCheck) {
+      const authService = new AuthService(db);
+      const passwordHash = await authService.hashPassword('Admin@123456');
+
       db.prepare(`
         INSERT INTO users (username, role, password_hash)
-        VALUES ('admin', 'admin', 'temp_hash_1234')
-      `).run();
+        VALUES ('admin', 'admin', ?)
+      `).run(passwordHash);
 
-      console.log("[DB] Admin user created");
+      console.log("[DB] Admin user created with hashed password");
     }
 
     console.log('[DB] Initialized successfully');

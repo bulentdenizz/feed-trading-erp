@@ -26,8 +26,8 @@ function createWindow() {
   }
 }
 
-app.on('ready', () => {
-  initDb();
+app.on('ready', async () => {
+  await initDb();
   registerAuthHandlers(); // Register IPC handlers for authentication
   createWindow();
 });

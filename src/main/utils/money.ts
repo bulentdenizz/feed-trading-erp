@@ -1,6 +1,6 @@
 /**
  * Money utilities — always work with INTEGER cents (kuruş)
- * Display format: en-US locale ("1,234.56")
+ * Display format: tr-TR locale ("1.234,56")
  */
 
 /**
@@ -70,11 +70,11 @@ export function toKurus(input: unknown): number {
 
 /**
  * Convert integer cents to formatted money string
- * Format: en-US locale with 2 decimal places
+ * Format: tr-TR locale with 2 decimal places
  *
  * @param kurus - Integer cents
- * @param includeCurrency - Add currency symbol (default: true)
- * @returns Formatted string e.g., "1,234.56" or "1,234.56 USD"
+ * @param includeCurrency - Add currency symbol (default: false)
+ * @returns Formatted string e.g., "1.234,56" or "1.234,56 ₺"
  */
 export function fromKurus(kurus: number, includeCurrency = false): string {
   if (!Number.isInteger(kurus)) {
@@ -85,7 +85,7 @@ export function fromKurus(kurus: number, includeCurrency = false): string {
     throw new Error('Amount cannot be negative');
   }
 
-  const formatter = new Intl.NumberFormat('en-US', {
+  const formatter = new Intl.NumberFormat('tr-TR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     useGrouping: true,
@@ -93,7 +93,7 @@ export function fromKurus(kurus: number, includeCurrency = false): string {
 
   const formatted = formatter.format(kurus / 100);
 
-  return includeCurrency ? `${formatted} USD` : formatted;
+  return includeCurrency ? `${formatted} ₺` : formatted;
 }
 
 /**
