@@ -5,6 +5,9 @@ import { registerAuthHandlers } from './handlers/auth.handler';
 import { registerEntityHandlers } from './handlers/entities.handler';
 import { registerItemHandlers } from './handlers/items.handler';
 import { registerInventoryHandlers } from './handlers/inventory.handler';
+import { registerTransactionHandlers } from './handlers/transactions.handler';
+import { registerPaymentHandlers } from './handlers/payments.handler';
+import { registerLedgerHandlers } from './handlers/ledger.handler';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -35,6 +38,9 @@ app.on('ready', async () => {
   registerEntityHandlers();
   registerItemHandlers();
   registerInventoryHandlers();
+  registerTransactionHandlers();
+  registerPaymentHandlers();
+  registerLedgerHandlers();
   createWindow();
 });
 
