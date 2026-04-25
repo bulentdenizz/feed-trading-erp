@@ -30,8 +30,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (username: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      // Call IPC to authenticate
-      const result = await (window as any).auth.login(username, password);
+      const result = await window.api.auth.login(username, password);
 
       if (result) {
         set({
@@ -43,10 +42,10 @@ export const useAuthStore = create<AuthState>((set) => ({
           isLoading: false,
         });
       } else {
-        throw new Error('Login failed');
+        throw new Error('Giriş başarısız');
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An error occurred';
+      const message = error instanceof Error ? error.message : 'Bir hata oluştu';
       set({
         error: message,
         isLoading: false,
@@ -60,10 +59,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = useAuthStore.getState().token;
       if (!token) {
-        throw new Error('No token found');
+        throw new Error('Oturum bulunamadı');
       }
-      // Call IPC to logout
-      await (window as any).auth.logout(token);
+      await window.api.auth.logout(token);
       set({
         userId: null,
         username: null,
@@ -73,7 +71,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         isLoading: false,
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Logout failed';
+      const message = error instanceof Error ? error.message : 'Çıkış başarısız';
       set({
         error: message,
         isLoading: false,
