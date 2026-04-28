@@ -25,7 +25,7 @@ const fallbackComponent = (name: string) => () => (
 );
 
 // Stub pages for routing
-const CustomersPage = lazy(() => Promise.resolve({ default: fallbackComponent('Müşteriler') }));
+const CustomersPage = lazy(() => import('../features/customers/CustomersPage'));
 const SuppliersPage = lazy(() => Promise.resolve({ default: fallbackComponent('Tedarikçiler') }));
 const InventoryPage = lazy(() => Promise.resolve({ default: fallbackComponent('Stok Yönetimi') }));
 const SalesPage = lazy(() => Promise.resolve({ default: fallbackComponent('Satışlar') }));

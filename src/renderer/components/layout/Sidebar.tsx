@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
-  Users,
   Package,
-  FileText,
   BarChart3,
   Sun,
   Moon,
@@ -13,28 +11,34 @@ import {
   ChevronDown,
   UserCheck,
   Truck,
+  Users,
   LogOut,
   Settings,
   ShoppingCart,
-  CreditCard
+  ArrowDownCircle,
+  CreditCard,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentPage = location.pathname.replace('/', '') || 'dashboard';
+
+  // ✅ Düzeltildi: split kullanımı ('/sales' → 'sales')
+  const currentPage = location.pathname.split("/")[1] || "dashboard";
 
   const [collapsed, setCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains("dark"));
-  
+  const [darkMode, setDarkMode] = useState(
+    document.documentElement.classList.contains("dark")
+  );
+
   const { username, logout } = useAuthStore();
 
   const handleLogout = async () => {
     try {
       await logout();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -48,21 +52,14 @@ export default function Sidebar() {
     navigate(`/${path}`);
   };
 
-  // Cariler Group
+  // ─── Cariler Grubu (genişletilebilir) ─────────────────────────────────────
   const cariPages = ["customers", "suppliers"];
   const cariActive = cariPages.includes(currentPage);
   const [carilerOpen, setCarilerOpen] = useState(cariActive);
 
-  // İşlemler Group
-  const islemPages = ["sales", "purchases", "payments"];
-  const islemActive = islemPages.includes(currentPage);
-  const [islemlerOpen, setIslemlerOpen] = useState(islemActive);
-
-  // Auto-expand groups based on active route
   useEffect(() => {
     if (cariActive) setCarilerOpen(true);
-    if (islemActive) setIslemlerOpen(true);
-  }, [cariActive, islemActive]);
+  }, [cariActive]);
 
   const handleCarilerClick = () => {
     if (collapsed) {
@@ -77,19 +74,7 @@ export default function Sidebar() {
     }
   };
 
-  const handleIslemlerClick = () => {
-    if (collapsed) {
-      onNavigate("sales");
-      return;
-    }
-    if (islemActive) {
-      setIslemlerOpen((o) => !o);
-    } else {
-      setIslemlerOpen(true);
-      onNavigate("sales");
-    }
-  };
-
+  // ─── Tekil menü öğesi render ───────────────────────────────────────────────
   const renderItem = (id: string, label: string, Icon: React.ElementType) => {
     const isActive = currentPage === id;
     return (
@@ -98,9 +83,10 @@ export default function Sidebar() {
         onClick={() => onNavigate(id)}
         className={`
           w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors relative
-          ${isActive
-            ? "bg-accent text-accent-foreground"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          ${
+            isActive
+              ? "bg-accent text-accent-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
           }
         `}
       >
@@ -116,31 +102,32 @@ export default function Sidebar() {
   return (
     <aside
       className="h-screen flex flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 shrink-0"
-      style={{ width: collapsed ? 56 : 224 }}
+      style={{ width: collapsed ? 56 : 220 }}
     >
-      {/* Logo */}
+      {/* ── Logo ── */}
       <div className="flex items-center gap-2 px-4 h-14 border-b border-border shrink-0">
         <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-          <span className="text-primary-foreground text-xs" style={{ fontWeight: 700 }}>Y</span>
+          <span className="text-primary-foreground text-xs font-bold">Y</span>
         </div>
         {!collapsed && <span className="text-sm font-medium">YemTicaret</span>}
       </div>
 
-      {/* Menu */}
+      {/* ── Navigasyon ── */}
       <nav className="flex-1 py-3 space-y-0.5 px-2 overflow-y-auto">
-        
-        {/* Ana Menü */}
+
+        {/* Gösterge Paneli */}
         {renderItem("dashboard", "Gösterge Paneli", LayoutDashboard)}
 
-        {/* Cariler (expandable) */}
+        {/* Cariler (genişletilebilir grup) */}
         <div className="pt-1">
           <button
             onClick={handleCarilerClick}
             className={`
               w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors relative
-              ${cariActive
-                ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              ${
+                cariActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               }
             `}
           >
@@ -152,7 +139,9 @@ export default function Sidebar() {
               <>
                 <span className="flex-1 text-left">Cariler</span>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${carilerOpen ? "rotate-180" : ""}`}
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    carilerOpen ? "rotate-180" : ""
+                  }`}
                 />
               </>
             )}
@@ -163,7 +152,9 @@ export default function Sidebar() {
               <button
                 onClick={() => onNavigate("customers")}
                 className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  currentPage === "customers" ? "text-primary bg-accent" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  currentPage === "customers"
+                    ? "text-primary bg-accent"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 <UserCheck className="w-3.5 h-3.5 shrink-0" />
@@ -172,7 +163,9 @@ export default function Sidebar() {
               <button
                 onClick={() => onNavigate("suppliers")}
                 className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  currentPage === "suppliers" ? "text-primary bg-accent" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  currentPage === "suppliers"
+                    ? "text-primary bg-accent"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 <Truck className="w-3.5 h-3.5 shrink-0" />
@@ -184,66 +177,18 @@ export default function Sidebar() {
 
         {/* Stok */}
         <div className="pt-1">
-          {renderItem("inventory", "Stok Yönetimi", Package)}
+          {renderItem("inventory", "Stok", Package)}
         </div>
 
-        {/* İşlemler (expandable) */}
+        {/* ✅ YENİ: Satışlar, Alışlar, Ödemeler — tekil öğeler */}
         <div className="pt-1">
-          <button
-            onClick={handleIslemlerClick}
-            className={`
-              w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors relative
-              ${islemActive
-                ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }
-            `}
-          >
-            {islemActive && (
-              <div className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-primary" />
-            )}
-            <FileText className="w-4 h-4 shrink-0" />
-            {!collapsed && (
-              <>
-                <span className="flex-1 text-left">İşlemler</span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${islemlerOpen ? "rotate-180" : ""}`}
-                />
-              </>
-            )}
-          </button>
-
-          {!collapsed && islemlerOpen && (
-            <div className="mt-0.5 ml-3 pl-4 border-l border-border space-y-0.5">
-              <button
-                onClick={() => onNavigate("sales")}
-                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  currentPage === "sales" ? "text-primary bg-accent" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
-                <span>Satışlar</span>
-              </button>
-              <button
-                onClick={() => onNavigate("purchases")}
-                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  currentPage === "purchases" ? "text-primary bg-accent" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
-                <span>Alışlar</span>
-              </button>
-              <button
-                onClick={() => onNavigate("payments")}
-                className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
-                  currentPage === "payments" ? "text-primary bg-accent" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <CreditCard className="w-3.5 h-3.5 shrink-0" />
-                <span>Ödemeler</span>
-              </button>
-            </div>
-          )}
+          {renderItem("sales", "Satışlar", ShoppingCart)}
+        </div>
+        <div className="pt-1">
+          {renderItem("purchases", "Alışlar", ArrowDownCircle)}
+        </div>
+        <div className="pt-1">
+          {renderItem("payments", "Ödemeler", CreditCard)}
         </div>
 
         {/* Raporlar */}
@@ -252,41 +197,59 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* Bottom controls */}
+      {/* ── Alt Kontroller ── */}
       <div className="p-2 border-t border-border space-y-1 shrink-0">
+        {/* ✅ YENİ: Ayarlar */}
         <button
           onClick={() => onNavigate("settings")}
           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-            currentPage === "settings" ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            currentPage === "settings"
+              ? "bg-accent text-accent-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
           }`}
         >
           <Settings className="w-4 h-4 shrink-0" />
           {!collapsed && <span>Ayarlar</span>}
         </button>
 
+        {/* Koyu/Açık mod */}
         <button
           onClick={onToggleDark}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
-          {darkMode ? <Sun className="w-4 h-4 shrink-0" /> : <Moon className="w-4 h-4 shrink-0" />}
+          {darkMode ? (
+            <Sun className="w-4 h-4 shrink-0" />
+          ) : (
+            <Moon className="w-4 h-4 shrink-0" />
+          )}
           {!collapsed && <span>{darkMode ? "Açık Mod" : "Koyu Mod"}</span>}
         </button>
-        
+
+        {/* Daralt */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
-          {collapsed ? <ChevronRight className="w-4 h-4 shrink-0" /> : <ChevronLeft className="w-4 h-4 shrink-0" />}
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4 shrink-0" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 shrink-0" />
+          )}
           {!collapsed && <span>Daralt</span>}
         </button>
 
+        {/* Çıkış */}
         <div className="pt-2 mt-2 border-t border-border/50">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           >
             <LogOut className="w-4 h-4 shrink-0" />
-            {!collapsed && <span className="flex-1 text-left truncate">{username || "Çıkış Yap"}</span>}
+            {!collapsed && (
+              <span className="flex-1 text-left truncate">
+                {username || "Çıkış Yap"}
+              </span>
+            )}
           </button>
         </div>
       </div>

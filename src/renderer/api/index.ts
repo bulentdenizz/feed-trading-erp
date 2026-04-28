@@ -8,7 +8,9 @@
 
 import { useAuthStore } from '../store/authStore';
 
-// ─── Yardımcı: token'ı store'dan al, fonksiyona ilet ───────────────────────
+// ─── Yardımcı: token'ı store'dan al, fonksiyona ilet ────────────────────────
+// NOT: Preload katmanındaki invoke() zaten { ok, data } zarfını açıyor.
+// withToken burada sadece token enjeksiyonu yapar; çift unwrap YAPMA.
 
 async function withToken<T>(fn: (token: string) => Promise<T>): Promise<T> {
   const token = useAuthStore.getState().token;
