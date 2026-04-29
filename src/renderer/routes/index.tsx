@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { createHashRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import AuthLayout from '../layouts/AuthLayout';
@@ -26,11 +26,11 @@ const fallbackComponent = (name: string) => () => (
 
 // Stub pages for routing
 const CustomersPage = lazy(() => import('../features/customers/CustomersPage'));
-const SuppliersPage = lazy(() => Promise.resolve({ default: fallbackComponent('Tedarikçiler') }));
-const InventoryPage = lazy(() => Promise.resolve({ default: fallbackComponent('Stok Yönetimi') }));
-const SalesPage = lazy(() => Promise.resolve({ default: fallbackComponent('Satışlar') }));
-const PurchasesPage = lazy(() => Promise.resolve({ default: fallbackComponent('Alışlar') }));
-const PaymentsPage = lazy(() => Promise.resolve({ default: fallbackComponent('Ödemeler') }));
+const SuppliersPage = lazy(() => import('../features/suppliers/SuppliersPage'));
+const InventoryPage = lazy(() => import('../features/inventory/InventoryPage'));
+const SalesPage = lazy(() => import('../features/sales/SalesPage'));
+const PurchasesPage = lazy(() => import('../features/purchases/PurchasesPage'));
+const PaymentsPage = lazy(() => import('../features/payments/PaymentsPage'));
 const ReportsPage = lazy(() => Promise.resolve({ default: fallbackComponent('Raporlar') }));
 const SettingsPage = lazy(() => Promise.resolve({ default: fallbackComponent('Ayarlar') }));
 
