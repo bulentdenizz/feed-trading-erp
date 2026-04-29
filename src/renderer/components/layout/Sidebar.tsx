@@ -176,25 +176,15 @@ export default function Sidebar() {
         </div>
 
         {/* Stok */}
-        <div className="pt-1">
-          {renderItem("inventory", "Stok", Package)}
-        </div>
+        {renderItem("inventory", "Stok", Package)}
 
         {/* ✅ YENİ: Satışlar, Alışlar, Ödemeler — tekil öğeler */}
-        <div className="pt-1">
-          {renderItem("sales", "Satışlar", ShoppingCart)}
-        </div>
-        <div className="pt-1">
-          {renderItem("purchases", "Alışlar", ArrowDownCircle)}
-        </div>
-        <div className="pt-1">
-          {renderItem("payments", "Ödemeler", CreditCard)}
-        </div>
+        {renderItem("sales", "Satışlar", ShoppingCart)}
+        {renderItem("purchases", "Alışlar", ArrowDownCircle)}
+        {renderItem("payments", "Ödemeler", CreditCard)}
 
         {/* Raporlar */}
-        <div className="pt-1">
-          {renderItem("reports", "Raporlar", BarChart3)}
-        </div>
+        {renderItem("reports", "Raporlar", BarChart3)}
       </nav>
 
       {/* ── Alt Kontroller ── */}

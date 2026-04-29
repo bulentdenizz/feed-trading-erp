@@ -6,16 +6,11 @@ import { useTransactions } from '../../hooks/useTransactions';
 import { useCustomers, useSuppliers } from '../../hooks/useEntities';
 import { useOpenInvoices } from '../../hooks/useLedger';
 import { useRecordPaymentIn, useRecordPaymentOut, useCancelPayment } from '../../hooks/usePayments';
+import { fromKurus, toKurus } from '../../utils/formatters';
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
 
-function fromKurus(k: number): string {
-  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(k / 100);
-}
 
-function toKurus(lira: string): number {
-  return Math.round(parseFloat(lira.replace(',', '.')) * 100);
-}
 
 // ─── Autocomplete Component ───────────────────────────────────────────────────
 

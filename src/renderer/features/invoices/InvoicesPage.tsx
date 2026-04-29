@@ -6,26 +6,21 @@ import {
 import { useTransactions, useCancelTransaction, useCreateSale, useCreatePurchase } from '../../hooks/useTransactions';
 import { useCustomers, useSuppliers } from '../../hooks/useEntities';
 import { useItems } from '../../hooks/useItems';
+import { fromKurus, toKurus } from '../../utils/formatters';
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
 
-function fromKurus(k: number): string {
-  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(k / 100);
-}
 
-function toKurus(lira: string): number {
-  return Math.round(parseFloat(lira.replace(',', '.')) * 100);
-}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type FaturaDurum = 'Ödendi' | 'Bekliyor' | 'Vadeli' | 'Gecikmiş';
+type FaturaDurum = 'Ödendi' | 'Bekliyor' | 'Vadeli' | 'Gecikmiş' | 'İptal';
 type FaturaTip = 'sale' | 'purchase';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getDurum(tx: any): FaturaDurum {
-  if (tx.status === 'cancelled') return 'Gecikmiş'; // Veya iptal statusu eklenebilir
+  if (tx.status === 'cancelled') return 'İptal';
   if (tx.remaining_kurus === 0) return 'Ödendi';
   if (!tx.due_date) return 'Bekliyor';
   if (new Date(tx.due_date) < new Date()) return 'Gecikmiş';
@@ -38,6 +33,7 @@ function DurumBadge({ durum }: { durum: FaturaDurum }) {
     'Bekliyor': 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400',
     'Vadeli': 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400',
     'Gecikmiş': 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400',
+    'İptal': 'bg-muted text-muted-foreground',
   };
   return <span className={`text-xs px-1.5 py-0.5 rounded-md ${styles[durum]}`}>{durum}</span>;
 }

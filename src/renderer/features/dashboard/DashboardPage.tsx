@@ -11,9 +11,7 @@ import {
 
 // ─── Yardımcı ────────────────────────────────────────────────────────────────
 
-function fromKurus(kurus: number): string {
-  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(kurus / 100);
-}
+import { fromKurus } from '../../utils/formatters';
 
 function daysBetween(a: Date, b: Date) {
   return Math.ceil((a.getTime() - b.getTime()) / 86_400_000);

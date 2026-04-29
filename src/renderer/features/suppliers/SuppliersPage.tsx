@@ -8,13 +8,9 @@ import { useSuppliers, useCreateEntity } from '../../hooks/useEntities';
 import { useEntityBalance, useOpenInvoices, useStatement } from '../../hooks/useLedger';
 import { useRecordPaymentOut } from '../../hooks/usePayments';
 import { useTransactions } from '../../hooks/useTransactions';
+import { fromKurus, toKurus } from '../../utils/formatters';
 
-function fromKurus(k: number): string {
-  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(k / 100);
-}
-function toKurus(lira: string): number {
-  return Math.round(parseFloat(lira.replace(',', '.')) * 100);
-}
+
 
 type FilterType = 'all' | 'active' | 'inactive';
 

@@ -8,15 +8,11 @@ import { useCustomers, useCreateEntity } from '../../hooks/useEntities';
 import { useEntityBalance, useOpenInvoices, useStatement } from '../../hooks/useLedger';
 import { useRecordPaymentIn } from '../../hooks/usePayments';
 import { useTransactions } from '../../hooks/useTransactions';
+import { fromKurus, toKurus } from '../../utils/formatters';
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
 
-function fromKurus(k: number): string {
-  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(k / 100);
-}
-function toKurus(lira: string): number {
-  return Math.round(parseFloat(lira.replace(',', '.')) * 100);
-}
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
