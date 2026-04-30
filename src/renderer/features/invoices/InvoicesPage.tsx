@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
-  Search, Plus, FileText, Clock, CheckCircle,
-  AlertCircle, X, Check, ChevronDown, Trash2
+  Search, Plus, Clock,
+  AlertCircle, X, Check, Trash2
 } from 'lucide-react';
 import { useTransactions, useCancelTransaction, useCreateSale, useCreatePurchase } from '../../hooks/useTransactions';
 import { useCustomers, useSuppliers } from '../../hooks/useEntities';
@@ -365,48 +365,58 @@ export function InvoicesPage({ defaultTab }: { defaultTab: FaturaTip }) {
   const durumFiltreler: Array<'hepsi' | FaturaDurum> = ['hepsi', 'Bekliyor', 'Vadeli', 'Gecikmiş', 'Ödendi'];
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-background text-foreground">
+    <div className="flex-1 overflow-auto px-8 py-6 bg-background text-foreground no-scrollbar">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-medium mb-0.5">Faturalar</h1>
-          <p className="text-muted-foreground text-sm">Satış ve alış faturaları</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1">Faturalar</h1>
+          <p className="text-sm font-medium text-muted-foreground">Satış ve alış faturaları</p>
         </div>
-        <button onClick={() => setModal(true)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm rounded-lg hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => setModal(true)} 
+          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-sm shadow-primary/20"
+        >
           <Plus className="w-4 h-4" /> Yeni Fatura
         </button>
       </div>
 
       {/* KPI */}
-      <div className="grid grid-cols-3 gap-5 mb-6">
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+      <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Toplam Tutar</span>
-            <FileText className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Toplam Fatura Tutarı</span>
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10">
+              <Plus className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(toplamTutar)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400">{activeTx.length} fatura</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(toplamTutar)}</span>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Ödendi</span>
-            <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Ödenmiş</span>
+            <div className="p-2 rounded-lg bg-green-50 dark:bg-green-500/10">
+              <Check className="w-5 h-5 text-green-600 dark:text-green-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{odenenSayi} <span className="text-base text-muted-foreground font-normal">adet</span></span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">{fromKurus(toplamTutar - toplamKalan)}</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{odenenSayi}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400">fatura</span>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Bekleyen</span>
-            <Clock className="w-4 h-4 text-amber-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Açık Bakiye</span>
+            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10">
+              <Clock className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(toplamKalan)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">{activeTx.length - odenenSayi} fatura</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(toplamKalan)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">{activeTx.length - odenenSayi} fatura</span>
           </div>
         </div>
       </div>
@@ -420,33 +430,31 @@ export function InvoicesPage({ defaultTab }: { defaultTab: FaturaTip }) {
       )}
 
       {/* Tabs + toolbar */}
-      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <div className="flex items-center gap-6">
           {/* Tabs */}
-          <div className="flex items-center border-b border-border w-max px-2 space-x-4">
+          <div className="flex items-center bg-card border border-border/60 rounded-xl p-1 shadow-sm">
             <button
               onClick={() => { setAktifTab('sale'); setArama(''); setDurumFiltre('hepsi'); }}
-              className={`pb-2 px-2 text-sm transition-colors relative ${aktifTab === 'sale' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${aktifTab === 'sale' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
             >
               Satışlar
-              {aktifTab === 'sale' && <div className="absolute bottom-[-1px] left-0 w-full h-0.5 bg-primary rounded-t-full" />}
             </button>
             <button
               onClick={() => { setAktifTab('purchase'); setArama(''); setDurumFiltre('hepsi'); }}
-              className={`pb-2 px-2 text-sm transition-colors relative ${aktifTab === 'purchase' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${aktifTab === 'purchase' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
             >
               Alışlar
-              {aktifTab === 'purchase' && <div className="absolute bottom-[-1px] left-0 w-full h-0.5 bg-primary rounded-t-full" />}
             </button>
           </div>
 
           {/* Durum filtresi */}
-          <div className="flex items-center border border-border rounded-lg overflow-hidden ml-4">
+          <div className="flex items-center bg-card border border-border/60 rounded-xl p-1 shadow-sm">
             {durumFiltreler.map((d) => (
               <button
                 key={d}
                 onClick={() => setDurumFiltre(d)}
-                className={`px-3 py-1.5 text-sm transition-colors ${durumFiltre === d ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
+                className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${durumFiltre === d ? 'bg-muted text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
               >
                 {d === 'hepsi' ? 'Hepsi' : d}
               </button>
@@ -455,10 +463,10 @@ export function InvoicesPage({ defaultTab }: { defaultTab: FaturaTip }) {
         </div>
 
         {/* Arama */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
-            className="w-56 bg-input-background border border-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 text-sm bg-card border border-border/60 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-sm"
             placeholder="Fatura no veya cari..."
             value={arama}
             onChange={(e) => setArama(e.target.value)}
@@ -467,60 +475,65 @@ export function InvoicesPage({ defaultTab }: { defaultTab: FaturaTip }) {
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-muted-foreground border-b border-border" style={{ fontSize: 11 }}>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">fatura no</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">cari</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">tarih</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">vade</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide text-right">tutar</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide text-right">kalan</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide text-center">durum</th>
-              <th className="px-4 py-3 font-normal text-center">işlem</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            {filtered.map((tx) => {
-              const durum = getDurum(tx);
-              const isGecikmis = durum === 'Gecikmiş';
-              const isCancelled = tx.status === 'cancelled';
+      <div className="bg-card border border-border/60 rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border/50 bg-muted/20">
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">fatura no</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">cari</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">tarih</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">vade</th>
+                <th className="px-6 py-3.5 text-right text-muted-foreground font-semibold uppercase tracking-wider text-xs">tutar</th>
+                <th className="px-6 py-3.5 text-right text-muted-foreground font-semibold uppercase tracking-wider text-xs">kalan</th>
+                <th className="px-6 py-3.5 text-center text-muted-foreground font-semibold uppercase tracking-wider text-xs">durum</th>
+                <th className="px-6 py-3.5 text-center text-muted-foreground font-semibold uppercase tracking-wider text-xs">işlem</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              {filtered.map((tx) => {
+                const durum = getDurum(tx);
+                const isGecikmis = durum === 'Gecikmiş';
+                const isCancelled = tx.status === 'cancelled';
 
-              return (
-                <tr key={tx.id} className={`border-t border-border hover:bg-muted/40 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                  <td className="px-4 py-3"><span className="text-xs text-muted-foreground font-mono">{tx.invoice_number || `#${tx.id}`}</span></td>
-                  <td className="px-4 py-3" style={{ fontWeight: 500 }}>{tx.entity_name || '—'}</td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">{tx.transaction_date ? new Date(tx.transaction_date).toLocaleDateString('tr-TR') : '—'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs ${isGecikmis ? 'text-red-700 dark:text-red-400 font-bold' : 'text-muted-foreground'}`}>
-                      {tx.due_date ? new Date(tx.due_date).toLocaleDateString('tr-TR') : '—'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right" style={{ fontWeight: 700 }}>{fromKurus(tx.amount_kurus || 0)}</td>
-                  <td className="px-4 py-3 text-right">
-                    <span style={{ fontWeight: (tx.remaining_kurus || 0) > 0 ? 700 : 400 }} className={(tx.remaining_kurus || 0) > 0 ? 'text-amber-700 dark:text-amber-400' : 'text-muted-foreground'}>
-                      {(tx.remaining_kurus || 0) === 0 ? '—' : fromKurus(tx.remaining_kurus)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {isCancelled ? <span className="text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground">İptal</span> : <DurumBadge durum={durum} />}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {!isCancelled && (tx.remaining_kurus || 0) > 0 && (
-                       <button onClick={() => setIptalModalTx(tx)} className="text-xs text-red-500 hover:text-red-700 hover:underline transition-colors px-2 py-1 rounded">
-                         İptal Et
-                       </button>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
-            {filtered.length === 0 && (
-              <tr><td colSpan={8} className="px-4 py-10 text-center text-muted-foreground text-sm">Arama kriterine uygun fatura bulunamadı.</td></tr>
-            )}
-          </tbody>
-        </table>
+                return (
+                  <tr key={tx.id} className={`border-b last:border-b-0 border-border/30 hover:bg-muted/40 transition-colors group ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                    <td className="px-6 py-4"><span className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-0.5 rounded">{tx.invoice_number || `#${tx.id}`}</span></td>
+                    <td className="px-6 py-4 font-medium text-foreground">{tx.entity_name || '—'}</td>
+                    <td className="px-6 py-4 text-muted-foreground text-xs">{tx.transaction_date ? new Date(tx.transaction_date).toLocaleDateString('tr-TR') : '—'}</td>
+                    <td className="px-6 py-4">
+                      <span className={`text-xs font-medium ${isGecikmis ? 'text-red-700 dark:text-red-400' : 'text-muted-foreground'}`}>
+                        {tx.due_date ? new Date(tx.due_date).toLocaleDateString('tr-TR') : '—'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold">{fromKurus(tx.amount_kurus || 0)}</td>
+                    <td className="px-6 py-4 text-right">
+                      <span className={`font-bold ${(tx.remaining_kurus || 0) > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground'}`}>
+                        {(tx.remaining_kurus || 0) === 0 ? '—' : fromKurus(tx.remaining_kurus)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {isCancelled ? <span className="text-xs font-medium px-2 py-1 rounded-md bg-muted text-muted-foreground">İptal</span> : <DurumBadge durum={durum} />}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {!isCancelled && (tx.remaining_kurus || 0) > 0 && (
+                         <button 
+                           onClick={() => setIptalModalTx(tx)} 
+                           className="text-xs font-medium text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 px-3 py-1.5 rounded-lg transition-all"
+                         >
+                           İptal Et
+                         </button>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+              {filtered.length === 0 && (
+                <tr><td colSpan={8} className="px-6 py-16 text-center text-muted-foreground text-sm">Arama kriterine uygun fatura bulunamadı.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {modal && <YeniFaturaModal tip={aktifTab} onClose={() => setModal(false)} />}

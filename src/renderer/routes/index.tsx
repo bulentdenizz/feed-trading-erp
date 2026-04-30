@@ -11,15 +11,25 @@ const DashboardPage = lazy(() => import('../features/dashboard/DashboardPage'));
 
 // Generic fallback for unmigrated features
 const fallbackComponent = (name: string) => () => (
-  <div className="flex-1 flex flex-col items-center justify-center h-full gap-3 text-muted-foreground bg-background min-h-[80vh]">
-    <div className="text-center mb-6 w-full px-6">
-      <h1 className="text-3xl font-bold text-foreground text-left">{name}</h1>
-    </div>
-    <div className="flex-1 flex flex-col items-center justify-center gap-3">
-      <div className="w-12 h-12 rounded-xl border border-border flex items-center justify-center">
-        <span className="text-2xl">🚧</span>
+  <div className="flex-1 flex flex-col px-8 py-6 bg-background min-h-screen no-scrollbar">
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1">{name}</h1>
+        <p className="text-sm font-medium text-muted-foreground">Bu sayfa henüz geliştirme aşamasındadır</p>
       </div>
-      <p className="text-sm">Sayfa içeriği yakında eklenecek...</p>
+    </div>
+    
+    <div className="flex-1 flex flex-col items-center justify-center bg-card border border-border/60 rounded-2xl shadow-sm p-12">
+      <div className="w-20 h-20 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center mb-6 shadow-inner">
+        <span className="text-4xl">🏗️</span>
+      </div>
+      <h2 className="text-xl font-semibold text-foreground mb-2">Çalışmalar Devam Ediyor</h2>
+      <p className="text-muted-foreground text-center max-w-sm mb-8 font-medium">
+        {name} modülü şu anda geliştiriliyor. En kısa sürede tüm özellikleri ile hizmetinizde olacak.
+      </p>
+      <div className="flex gap-3">
+        <div className="px-4 py-2 bg-muted/50 rounded-xl text-xs font-semibold text-muted-foreground uppercase tracking-wider">v1.2.0-beta</div>
+      </div>
     </div>
   </div>
 );

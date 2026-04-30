@@ -140,75 +140,85 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-background text-foreground">
+    <div className="flex-1 overflow-auto px-8 py-6 bg-background text-foreground no-scrollbar">
 
       {/* ── Başlık ── */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-medium mb-0.5">Gösterge Paneli</h1>
-        <p className="text-sm text-muted-foreground">
-          {today.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
-          {username ? ` — Hoşgeldiniz, ${username}` : ''}
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1">Gösterge Paneli</h1>
+          <p className="text-sm font-medium text-muted-foreground">
+            {today.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
+            {username ? ` — Hoşgeldiniz, ${username}` : ''}
+          </p>
+        </div>
       </div>
 
       {/* ── KPI Grid (4) ── */}
-      <div className="grid grid-cols-4 gap-5 mb-6">
+      <div className="grid grid-cols-4 gap-6 mb-8">
 
         {/* Bugünkü Satış */}
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Bugünkü Satış</span>
-            <Wallet className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Bugünkü Satış</span>
+            <div className="p-2 rounded-lg bg-muted/50">
+              <Wallet className="w-5 h-5 text-foreground/70" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(todaySalesTotal)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">tahakkuk</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(todaySalesTotal)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400">tahakkuk</span>
           </div>
         </div>
 
         {/* Bugünkü Tahsilat */}
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Bugünkü Tahsilat</span>
-            <Wallet className="w-4 h-4 text-green-600" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Bugünkü Tahsilat</span>
+            <div className="p-2 rounded-lg bg-green-50 dark:bg-green-500/10">
+              <Wallet className="w-5 h-5 text-green-600 dark:text-green-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(todayPaymentsTotal)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">nakit girişi</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(todayPaymentsTotal)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400">nakit girişi</span>
           </div>
         </div>
 
         {/* Açık Alacak */}
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Açık Alacak</span>
-            <Users className="w-4 h-4 text-blue-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Açık Alacak</span>
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10">
+              <Users className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(totalReceivables)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">toplam bekleyen</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(totalReceivables)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">toplam bekleyen</span>
           </div>
         </div>
 
         {/* Kritik Stok */}
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Kritik Stok</span>
-            <Package className="w-4 h-4 text-amber-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Kritik Stok</span>
+            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10">
+              <Package className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{lowStockCount} Ürün</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">eşik altında</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{lowStockCount} Ürün</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">eşik altında</span>
           </div>
         </div>
       </div>
 
       {/* ── Chart Row 1 ── */}
-      <div className="grid grid-cols-3 gap-5 mb-6">
+      <div className="grid grid-cols-3 gap-6 mb-8">
 
         {/* Gelir/Gider AreaChart — col-span-2 */}
-        <div className="col-span-2 bg-card border border-border rounded-xl p-4">
-          <p className="text-sm font-medium mb-4">Gelir / Gider (Son 12 Ay)</p>
+        <div className="col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold mb-6">Gelir / Gider (Son 12 Ay)</h2>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={MOCK_REVENUE} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <defs>
@@ -232,17 +242,17 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Kategori Dağılımı PieChart — col-span-1 */}
-        <div className="bg-card border border-border rounded-xl p-4">
-          <p className="text-sm font-medium mb-2">Kategori Dağılımı</p>
-          <ResponsiveContainer width="100%" height={160}>
+        <div className="bg-card border border-border/60 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold mb-6">Kategori Dağılımı</h2>
+          <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
                 data={MOCK_CATEGORY}
                 dataKey="value"
-                innerRadius={45}
-                outerRadius={70}
+                innerRadius={55}
+                outerRadius={80}
                 stroke="none"
-                paddingAngle={3}
+                paddingAngle={4}
               >
                 {MOCK_CATEGORY.map((_, i) => (
                   <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
@@ -265,74 +275,83 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* ── Chart Row 2 ── */}
-      <div className="grid grid-cols-3 gap-5 mb-6">
+      <div className="grid grid-cols-3 gap-6 mb-8">
 
         {/* Haftalık Satış BarChart — col-span-1 */}
-        <div className="bg-card border border-border rounded-xl p-4">
-          <p className="text-sm font-medium mb-4">Haftalık Satış</p>
-          <ResponsiveContainer width="100%" height={180}>
+        <div className="bg-card border border-border/60 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold mb-6">Haftalık Satış</h2>
+          <ResponsiveContainer width="100%" height={200}>
             <BarChart data={MOCK_WEEKLY} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-              <CartesianGrid vertical={false} stroke="var(--border)" />
-              <XAxis dataKey="gun" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-              <Tooltip content={<BarTooltip />} />
-              <Bar dataKey="satis" fill="#16A34A" barSize={24} radius={[4, 4, 0, 0]} />
+              <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
+              <XAxis dataKey="gun" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} dx={-10} />
+              <Tooltip content={<BarTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.4 }} />
+              <Bar dataKey="satis" fill="#16A34A" barSize={28} radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Son İşlemler tablosu — col-span-2 */}
-        <div className="col-span-2 bg-card border border-border rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <p className="text-sm font-medium">Son İşlemler</p>
+        <div className="col-span-2 bg-card border border-border/60 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+          <div className="px-6 py-5 border-b border-border/50 flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Son İşlemler</h2>
+            <button className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+              Tümünü Gör
+            </button>
           </div>
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border">
-                {['Cari', 'Tip', 'Tutar', 'Tarih', 'Durum'].map(h => (
-                  <th
-                    key={h}
-                    className={`px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide ${h === 'Tutar' ? 'text-right' : ''}`}
-                    style={{ fontSize: 11 }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {recentTx && recentTx.length > 0 ? recentTx.map(t => (
-                <tr key={t.id} className="border-t border-border hover:bg-muted/40 transition-colors cursor-pointer">
-                  <td className="px-4 py-2.5 text-sm">{t.entity_title || '—'}</td>
-                  <td className="px-4 py-2.5">{typeBadge(t.transaction_type)}</td>
-                  <td className="px-4 py-2.5 text-right text-sm" style={{ fontWeight: 700 }}>{fromKurus(t.amount_kurus)}</td>
-                  <td className="px-4 py-2.5 text-sm text-muted-foreground">
-                    {new Date(t.transaction_date).toLocaleDateString('tr-TR')}
-                  </td>
-                  <td className="px-4 py-2.5">{statusBadge(t)}</td>
+          <div className="overflow-x-auto flex-1">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border/50 bg-muted/20">
+                  {['Cari', 'Tip', 'Tarih', 'Durum', 'Tutar'].map(h => (
+                    <th
+                      key={h}
+                      className={`px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs ${h === 'Tutar' ? 'text-right' : ''}`}
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              )) : (
-                <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground text-sm">
-                    Henüz işlem kaydı yok.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {(recentTx || []).length > 0 ? (recentTx || []).map(t => (
+                  <tr key={t.id} className="border-b last:border-b-0 border-border/30 hover:bg-muted/40 transition-colors cursor-pointer group">
+                    <td className="px-6 py-4 text-sm font-medium">{t.entity_title || '—'}</td>
+                    <td className="px-6 py-4">{typeBadge(t.transaction_type)}</td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                      {new Date(t.transaction_date).toLocaleDateString('tr-TR')}
+                    </td>
+                    <td className="px-6 py-4">{statusBadge(t)}</td>
+                    <td className="px-6 py-4 text-right text-sm font-bold">{fromKurus(t.amount_kurus)}</td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground text-sm">
+                      Henüz işlem kaydı yok.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* ── Yaklaşan Vadeler (grid-cols-4) ── */}
-      <div>
-        <p className="text-sm font-medium mb-3">Yaklaşan Vadeler</p>
-        <div className="grid grid-cols-4 gap-5">
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold">Yaklaşan Vadeler</h2>
+          <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Raporlara Git
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-6">
           {(upcomingDues.length > 0 ? upcomingDues : MOCK_DUE).map((due: any, i: number) => (
-            <div key={i} className="border border-border rounded-lg p-3 bg-card flex flex-col gap-2">
-              <p className="text-sm truncate">{due.title}</p>
-              <p className="text-lg" style={{ fontWeight: 700 }}>{fromKurus(due.amount_kurus)}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
+            <div key={i} className="border border-border/60 rounded-2xl p-5 bg-card shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-3 group">
+              <p className="text-sm font-medium truncate text-muted-foreground group-hover:text-foreground transition-colors">{due.title}</p>
+              <p className="text-2xl font-bold tracking-tight">{fromKurus(due.amount_kurus)}</p>
+              <div className="flex items-center justify-between mt-1 pt-3 border-t border-border/40">
+                <span className="text-xs font-medium text-muted-foreground">
                   {new Date(due.due_date).toLocaleDateString('tr-TR')}
                 </span>
                 {dueBadge(due.due_date)}

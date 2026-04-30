@@ -279,12 +279,9 @@ export default function PaymentsPage() {
   const [modalType, setModalType] = useState<'in' | 'out' | null>(null);
   const [iptalModalTx, setIptalModalTx] = useState<any>(null);
 
-  // Veri çekimi
-  // Ana tablo için aktif tab tipine göre tx getir
   const { data: rawTransactions = [] } = useTransactions({ type: aktifTab });
   const transactions = rawTransactions as any[];
 
-  // KPI'lar için ekstra veriler
   const monthStart = new Date(); monthStart.setDate(1);
   const monthStartStr = monthStart.toISOString().slice(0, 10);
   
@@ -294,17 +291,14 @@ export default function PaymentsPage() {
   const { data: allSales = [] } = useTransactions({ type: 'sale', status: 'active' });
   const { data: allPurchases = [] } = useTransactions({ type: 'purchase', status: 'active' });
 
-  // Hesaplamalar
   const kpiTahsilat = (monthIn as any[]).reduce((s, t) => s + (t.amount_kurus || 0), 0);
   const kpiOdeme = (monthOut as any[]).reduce((s, t) => s + (t.amount_kurus || 0), 0);
   const kpiTahsilEdilmemis = (allSales as any[]).reduce((s, t) => s + (t.remaining_kurus || 0), 0);
   const kpiOdenmemis = (allPurchases as any[]).reduce((s, t) => s + (t.remaining_kurus || 0), 0);
 
-  // Tablo Filtreleme
   const filtered = useMemo(() => {
     let list = transactions;
 
-    // Arama
     if (arama.trim()) {
       const q = arama.toLowerCase();
       list = list.filter(tx => 
@@ -313,7 +307,6 @@ export default function PaymentsPage() {
       );
     }
 
-    // Zaman
     if (zamanFiltre !== 'all') {
       const now = new Date();
       if (zamanFiltre === 'this_month') {
@@ -321,7 +314,7 @@ export default function PaymentsPage() {
         list = list.filter(tx => new Date(tx.transaction_date).getTime() >= start);
       } else if (zamanFiltre === 'this_week') {
         const start = new Date(now);
-        start.setDate(now.getDate() - now.getDay()); // Sunday approx
+        start.setDate(now.getDate() - now.getDay());
         start.setHours(0,0,0,0);
         list = list.filter(tx => new Date(tx.transaction_date).getTime() >= start.getTime());
       }
@@ -331,96 +324,103 @@ export default function PaymentsPage() {
   }, [transactions, arama, zamanFiltre]);
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-background text-foreground">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex-1 overflow-auto px-8 py-6 bg-background text-foreground no-scrollbar">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-medium mb-0.5">Ödemeler</h1>
-          <p className="text-muted-foreground text-sm">Tahsilat ve ödeme işlemleri</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1">Ödemeler</h1>
+          <p className="text-sm font-medium text-muted-foreground">Tahsilat ve ödeme işlemleri</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setModalType('out')} className="px-4 py-2 text-sm border border-border text-foreground rounded-lg hover:bg-muted transition-colors">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setModalType('out')} 
+            className="px-4 py-2.5 text-sm font-medium border border-border/60 bg-card text-foreground rounded-xl hover:bg-muted/50 transition-all shadow-sm"
+          >
             Yeni Ödeme
           </button>
-          <button onClick={() => setModalType('in')} className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+          <button 
+            onClick={() => setModalType('in')} 
+            className="px-4 py-2.5 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
+          >
             Yeni Tahsilat
           </button>
         </div>
       </div>
 
-      {/* KPI */}
-      <div className="grid grid-cols-4 gap-5 mb-6">
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+      <div className="grid grid-cols-4 gap-6 mb-8">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Bu Ay Tahsilat</span>
-            <ArrowDownCircle className="w-4 h-4 text-green-600 dark:text-green-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Bu Ay Tahsilat</span>
+            <div className="p-2 rounded-lg bg-green-50 dark:bg-green-500/10">
+              <ArrowDownCircle className="w-5 h-5 text-green-600 dark:text-green-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(kpiTahsilat)}</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(kpiTahsilat)}</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Bu Ay Ödeme</span>
-            <ArrowUpCircle className="w-4 h-4 text-red-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Bu Ay Ödeme</span>
+            <div className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10">
+              <ArrowUpCircle className="w-5 h-5 text-red-600 dark:text-red-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(kpiOdeme)}</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(kpiOdeme)}</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Tahsil Edilmemiş</span>
-            <Clock className="w-4 h-4 text-amber-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Tahsil Edilmemiş</span>
+            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10">
+              <Clock className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(kpiTahsilEdilmemis)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">alacaklar</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(kpiTahsilEdilmemis)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">alacaklar</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Ödenmemiş Borç</span>
-            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Ödenmemiş Borç</span>
+            <div className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{fromKurus(kpiOdenmemis)}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400">borçlar</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{fromKurus(kpiOdenmemis)}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400">borçlar</span>
           </div>
         </div>
       </div>
 
-      {/* Tabs + Toolbar */}
-      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          {/* Tabs */}
-          <div className="flex items-center border-b border-border w-max px-2 space-x-4">
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center bg-card border border-border/60 rounded-xl p-1 shadow-sm">
             <button
               onClick={() => { setAktifTab('payment_in'); setArama(''); }}
-              className={`pb-2 px-2 text-sm transition-colors relative ${aktifTab === 'payment_in' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${aktifTab === 'payment_in' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
             >
               Tahsilatlar
-              {aktifTab === 'payment_in' && <div className="absolute bottom-[-1px] left-0 w-full h-0.5 bg-primary rounded-t-full" />}
             </button>
             <button
               onClick={() => { setAktifTab('payment_out'); setArama(''); }}
-              className={`pb-2 px-2 text-sm transition-colors relative ${aktifTab === 'payment_out' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-6 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${aktifTab === 'payment_out' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
             >
               Ödemeler
-              {aktifTab === 'payment_out' && <div className="absolute bottom-[-1px] left-0 w-full h-0.5 bg-primary rounded-t-full" />}
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Zaman filtresi */}
+        <div className="flex items-center gap-4 flex-1 max-w-2xl justify-end">
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <select
-              className="w-40 bg-input-background border border-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-primary transition-colors appearance-none"
+              className="w-44 bg-card border border-border/60 rounded-xl pl-10 pr-10 py-2.5 text-sm font-medium outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-sm appearance-none cursor-pointer"
               value={zamanFiltre}
               onChange={e => setZamanFiltre(e.target.value as any)}
             >
@@ -428,14 +428,13 @@ export default function PaymentsPage() {
               <option value="this_month">Bu Ay</option>
               <option value="this_week">Bu Hafta</option>
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
 
-          {/* Arama */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
-              className="w-56 bg-input-background border border-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:border-primary transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 text-sm bg-card border border-border/60 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-sm"
               placeholder="Cari veya ödeme no..."
               value={arama}
               onChange={(e) => setArama(e.target.value)}
@@ -444,72 +443,76 @@ export default function PaymentsPage() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-muted-foreground border-b border-border" style={{ fontSize: 11 }}>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">tarih</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">ödeme no</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">cari</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">yön</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide text-right">tutar</th>
-              <th className="px-4 py-3 font-normal uppercase tracking-wide">bağlı fatura</th>
-              <th className="px-4 py-3 font-normal text-center">işlem</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            {filtered.map((tx) => {
-              const isCancelled = tx.status === 'cancelled';
-              const isIn = tx.type === 'payment_in';
-              const allocationCount = tx.allocations ? tx.allocations.length : 0;
+      <div className="bg-card border border-border/60 rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border/50 bg-muted/20">
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">tarih</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">ödeme no</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">cari</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">yön</th>
+                <th className="px-6 py-3.5 text-right text-muted-foreground font-semibold uppercase tracking-wider text-xs">tutar</th>
+                <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">bağlı fatura</th>
+                <th className="px-6 py-3.5 text-center text-muted-foreground font-semibold uppercase tracking-wider text-xs">işlem</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              {filtered.map((tx) => {
+                const isCancelled = tx.status === 'cancelled';
+                const isIn = tx.type === 'payment_in';
+                const allocationCount = tx.allocations ? tx.allocations.length : 0;
 
-              return (
-                <tr key={tx.id} className={`border-t border-border hover:bg-muted/40 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">{tx.transaction_date ? new Date(tx.transaction_date).toLocaleDateString('tr-TR') : '—'}</td>
-                  <td className="px-4 py-3"><span className="text-xs text-muted-foreground font-mono">{tx.invoice_number || `#${tx.id}`}</span></td>
-                  <td className="px-4 py-3" style={{ fontWeight: 500 }}>{tx.entity_name || '—'}</td>
-                  <td className="px-4 py-3">
-                    {isIn ? (
-                      <span className="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">
-                        <ArrowDownCircle className="w-3 h-3" /> Tahsilat
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-md bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400">
-                        <ArrowUpCircle className="w-3 h-3" /> Ödeme
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-right" style={{ fontWeight: 700 }}>{fromKurus(tx.amount_kurus || 0)}</td>
-                  <td className="px-4 py-3">
-                    {allocationCount > 0 ? (
-                      <span className="text-xs text-primary hover:underline cursor-pointer">
-                        {allocationCount === 1 && tx.allocations[0].invoice_number ? tx.allocations[0].invoice_number : `${allocationCount} fatura`}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {isCancelled ? (
-                       <span className="text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground">İptal</span>
-                    ) : (
-                       <button onClick={() => setIptalModalTx(tx)} className="text-xs text-red-500 hover:text-red-700 hover:underline transition-colors px-2 py-1 rounded">
-                         İptal
-                       </button>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
-            {filtered.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground text-sm">Arama kriterine uygun işlem bulunamadı.</td></tr>
-            )}
-          </tbody>
-        </table>
+                return (
+                  <tr key={tx.id} className={`border-b last:border-b-0 border-border/30 hover:bg-muted/40 transition-colors group ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                    <td className="px-6 py-4 text-muted-foreground text-xs">{tx.transaction_date ? new Date(tx.transaction_date).toLocaleDateString('tr-TR') : '—'}</td>
+                    <td className="px-6 py-4"><span className="text-xs text-muted-foreground font-mono bg-muted/50 px-2 py-0.5 rounded">{tx.invoice_number || `#${tx.id}`}</span></td>
+                    <td className="px-6 py-4 font-medium text-foreground">{tx.entity_name || '—'}</td>
+                    <td className="px-6 py-4">
+                      {isIn ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                          <ArrowDownCircle className="w-3.5 h-3.5" /> Tahsilat
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-md bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400">
+                          <ArrowUpCircle className="w-3.5 h-3.5" /> Ödeme
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold">{fromKurus(tx.amount_kurus || 0)}</td>
+                    <td className="px-6 py-4">
+                      {allocationCount > 0 ? (
+                        <span className="text-xs font-medium text-primary hover:underline cursor-pointer">
+                          {allocationCount === 1 && tx.allocations[0].invoice_number ? tx.allocations[0].invoice_number : `${allocationCount} fatura`}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {isCancelled ? (
+                         <span className="text-xs font-medium px-2 py-1 rounded-md bg-muted text-muted-foreground">İptal</span>
+                      ) : (
+                         <button 
+                           onClick={() => setIptalModalTx(tx)} 
+                           className="text-xs font-medium text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 px-3 py-1.5 rounded-lg transition-all"
+                         >
+                           İptal Et
+                         </button>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+              {filtered.length === 0 && (
+                <tr><td colSpan={7} className="px-6 py-16 text-center text-muted-foreground text-sm">Arama kriterine uygun işlem bulunamadı.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {modalType && <BasePaymentModal type={modalType} onClose={() => setModalType(null)} />}
+      {modalType && <BasePaymentModal type={modalType as any} onClose={() => setModalType(null)} />}
       {iptalModalTx && <IptalModal tx={iptalModalTx} onClose={() => setIptalModalTx(null)} />}
     </div>
   );

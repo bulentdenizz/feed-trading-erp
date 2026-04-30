@@ -260,62 +260,73 @@ export default function InventoryPage() {
   if (error) return <div className="p-6"><p className="text-sm text-red-600">Hata: {(error as Error).message}</p></div>;
 
   return (
-    <div className="flex-1 overflow-auto p-6 bg-background text-foreground">
+    <div className="flex-1 overflow-auto px-8 py-6 bg-background text-foreground no-scrollbar">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-medium mb-0.5">Stok</h1>
-          <p className="text-sm text-muted-foreground">{aktifItems.length} ürün kayıtlı</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1">Stok</h1>
+          <p className="text-sm font-medium text-muted-foreground">{aktifItems.length} ürün kayıtlı</p>
         </div>
-        <button onClick={() => setShowNewModal(true)} className="flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => setShowNewModal(true)} 
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-sm shadow-primary/20"
+        >
           <Plus className="w-4 h-4" /> Yeni Ürün
         </button>
       </div>
 
       {/* KPI (4) */}
-      <div className="grid grid-cols-4 gap-5 mb-6">
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+      <div className="grid grid-cols-4 gap-6 mb-8">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Toplam Ürün</span>
-            <Package className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Toplam Ürün</span>
+            <div className="p-2 rounded-lg bg-muted/50">
+              <Package className="w-5 h-5 text-foreground/70" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{aktifItems.length}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400">aktif</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{aktifItems.length}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400">aktif</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Stok Değeri</span>
-            <TrendingUp className="w-4 h-4 text-muted-foreground" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Stok Değeri</span>
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10">
+              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{stokDegeriStr}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400">alış bazlı</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{stokDegeriStr}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">alış bazlı</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Kritik Stok</span>
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Kritik Stok</span>
+            <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{kritikSayi}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400">ürün</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{kritikSayi}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">ürün</span>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3">
+        <div className="bg-card border border-border/60 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs uppercase tracking-wide">Tükenen</span>
-            <AlertTriangle className="w-4 h-4 text-red-500" />
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Tükenen</span>
+            <div className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10">
+              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-500" />
+            </div>
           </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl" style={{ fontWeight: 700 }}>{tukenenSayi}</span>
-            <span className="text-xs px-1.5 py-0.5 rounded-md bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400">ürün</span>
+          <div className="flex items-end justify-between mt-2">
+            <span className="text-3xl font-bold tracking-tight">{tukenenSayi}</span>
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400">ürün</span>
           </div>
         </div>
       </div>
@@ -333,47 +344,59 @@ export default function InventoryPage() {
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Ürün adı veya SKU..." className="w-full pl-9 pr-3 py-2 text-sm bg-input-background border border-border rounded-lg outline-none focus:border-primary transition-colors" />
-        </div>
-        <div className="flex items-center border border-border rounded-lg overflow-hidden">
-          {kategoriler.map(k => (
-            <button key={k} onClick={() => setKategori(k)} className={`px-3 py-1.5 text-sm transition-colors whitespace-nowrap ${kategori === k ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}>
-              {k}
-            </button>
-          ))}
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-1 max-w-4xl">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              placeholder="Ürün adı veya SKU..." 
+              className="w-full pl-10 pr-4 py-2.5 text-sm bg-card border border-border/60 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-sm" 
+            />
+          </div>
+          <div className="flex items-center bg-card border border-border/60 rounded-xl p-1 shadow-sm overflow-x-auto no-scrollbar">
+            {kategoriler.map(k => (
+              <button 
+                key={k} 
+                onClick={() => setKategori(k)} 
+                className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap ${kategori === k ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'}`}
+              >
+                {k}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Tablo */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border/60 rounded-2xl overflow-hidden shadow-sm">
         {isLoading ? (
-          <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-7 w-7 border-b-2 border-primary" /></div>
+          <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide cursor-pointer select-none" style={{ fontSize: 11 }} onClick={() => handleSort('ad')}>
-                  Ürün Adı <SortIcon field="ad" />
-                </th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide" style={{ fontSize: 11 }}>SKU</th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide" style={{ fontSize: 11 }}>Kategori</th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide cursor-pointer select-none" style={{ fontSize: 11 }} onClick={() => handleSort('stok')}>
-                  Stok <SortIcon field="stok" />
-                </th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide" style={{ fontSize: 11 }}>Alış Fiyatı</th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide cursor-pointer select-none" style={{ fontSize: 11 }} onClick={() => handleSort('satisFiyati')}>
-                  Satış Fiyatı <SortIcon field="satisFiyati" />
-                </th>
-                <th className="px-4 py-2.5 text-left text-muted-foreground font-normal uppercase tracking-wide" style={{ fontSize: 11 }}>Durum</th>
-                <th className="px-4 py-2.5" style={{ fontSize: 11 }}></th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border/50 bg-muted/20">
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs cursor-pointer select-none" onClick={() => handleSort('ad')}>
+                    Ürün Adı <SortIcon field="ad" />
+                  </th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">SKU</th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">Kategori</th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs cursor-pointer select-none" onClick={() => handleSort('stok')}>
+                    Stok <SortIcon field="stok" />
+                  </th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">Alış Fiyatı</th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs cursor-pointer select-none" onClick={() => handleSort('satisFiyati')}>
+                    Satış Fiyatı <SortIcon field="satisFiyati" />
+                  </th>
+                  <th className="px-6 py-3.5 text-left text-muted-foreground font-semibold uppercase tracking-wider text-xs">Durum</th>
+                  <th className="px-6 py-3.5"></th>
+                </tr>
+              </thead>
+            <tbody className="text-sm">
               {filtered.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-10 text-center text-muted-foreground text-sm">Arama kriterine uygun ürün bulunamadı.</td></tr>
+                <tr><td colSpan={8} className="px-6 py-16 text-center text-muted-foreground text-sm">Arama kriterine uygun ürün bulunamadı.</td></tr>
               ) : filtered.map(item => {
                 const id = item.item_id ?? (item as any).id;
                 const stokColor = item.current_stock === 0
@@ -382,31 +405,31 @@ export default function InventoryPage() {
                   ? 'text-amber-600'
                   : '';
                 return (
-                  <tr key={id} className="border-t border-border hover:bg-muted/40 transition-colors group">
-                    <td className="px-4 py-3 text-sm">
-                      <span style={{ fontWeight: 500 }}>{item.name}</span>
-                      {!item.is_active && <span className="ml-2 text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground">Pasif</span>}
+                  <tr key={id} className="border-b last:border-b-0 border-border/30 hover:bg-muted/40 transition-colors group">
+                    <td className="px-6 py-4">
+                      <span className="font-medium text-foreground">{item.name}</span>
+                      {!item.is_active && <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">Pasif</span>}
                     </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{item.sku || '—'}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-6 py-4 text-xs text-muted-foreground font-mono">{item.sku || '—'}</td>
+                    <td className="px-6 py-4">
                       {item.category
-                        ? <span className="text-xs px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400">{item.category}</span>
+                        ? <span className="text-xs font-medium px-2 py-1 rounded-md bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">{item.category}</span>
                         : <span className="text-xs text-muted-foreground">—</span>}
                     </td>
-                    <td className={`px-4 py-3 text-sm ${stokColor}`} style={{ fontWeight: 700 }}>
+                    <td className={`px-6 py-4 font-bold ${stokColor}`}>
                       {item.current_stock} {item.unit}
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground" style={{ fontWeight: 700 }}>
+                    <td className="px-6 py-4 text-muted-foreground font-bold">
                       {item.default_buy_price_kurus > 0 ? fromKurus(item.default_buy_price_kurus) : '—'}
                     </td>
-                    <td className="px-4 py-3 text-sm" style={{ fontWeight: 700 }}>
+                    <td className="px-6 py-4 font-bold">
                       {item.default_sale_price_kurus > 0 ? fromKurus(item.default_sale_price_kurus) : '—'}
                     </td>
-                    <td className="px-4 py-3"><StokBadge item={item} /></td>
-                    <td className="px-4 py-3">
+                    <td className="px-6 py-4"><StokBadge item={item} /></td>
+                    <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => setAyarlaItem(item)}
-                        className="text-xs text-primary hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-xs font-medium text-primary hover:text-primary/80 bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                       >
                         Düzelt
                       </button>
@@ -416,6 +439,7 @@ export default function InventoryPage() {
               })}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
